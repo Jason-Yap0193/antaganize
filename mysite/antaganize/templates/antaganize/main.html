@@ -10,10 +10,11 @@
   <link rel="stylesheet" type="text/css" href="{% static 'antaganize/main.css' %}"">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <link class="jsbin" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>
-  <div class="container-fluid" style="padding: 30px 250px 0px 250px">
+  <div class="container-fluid" style="padding: 30px 100px 0px 100px">
     <div class="row">
       <div class="col-sm-9 " style="margin-bottom: 0px">
         <h1 style="margin-bottom: 0px; padding-left: 25px"><a href="{% url 'antaganize:index' %}">AntaGANize</a></h1>
@@ -29,53 +30,42 @@
     </div>
   </div>
   <hr style="border-top: solid black; margin-top: 0px">
-  <div class="container-fluid" style="padding: 30px 250px 0px 250px">
+  <div class="container-fluid" style="padding: 30px 100px 0px 100px">
     <div class="row">
-      <div class="col-sm-7">
+      <div class="col-sm-8">
         <!-- <form action="/action_page.php"> -->
           <div class="row">
-            <div class="col-sm-6">
-              <label for="img">Select image:</label>
+            <div class="col-sm-4">
+              <label for="img">Add source image:</label>
               <br>
-              
-              {% if file_url %}
-                <img src="{{ file_url }}" alt="source" style="max-height:100px">
-              {% else %}
-                {% load static %}
-                <img src="{% static 'antaganize/placeholder.jpg' %}" alt="Placeholder image" height="300px" width="300px">
-              {% endif %}
-              
-              <form method="post" enctype="multipart/form-data" action="">
-                {% csrf_token %}
-                 {{ form.as_p }}
-                <button type="submit">Upload</button>
-              </form>
-              
+              <input type="file" onchange="readURL(this, '#source');" />
+              <img id="source" src="#" alt="" max-width="300px"/>    
             </div>
-            <div class="col-sm-6" style="padding-left: 30px">
+            <div class="col-sm-4">
+              <label for="img">Add target image:</label>
+              <br>
+              <input type="file" onchange="readURL(this, '#target');" />
+              <img id="target" src="#" alt="" max-width="300px"/>   
+            </div>
+
+            <div class="col-sm-4" style="padding-left: 30px">
               <label for="model">Choose a model:</label>
               <br>
               <select name="model" id="model">
-                <option value="modela">Model A</option>
-                <option value="modelb">Model B</option>
-                <option value="modelc">Model C</option>
+                <option value="ourvariant">Our Variant</option>
               </select>
               <br>
-              <label for="vol">Setting A:</label>
-              <input type="range" id="settinga" name="settinga" min="0" max="100">
               <br>
-              <label for="vol">Setting B:</label>
-              <input type="range" id="settingb" name="settingb" min="0" max="100">
-
-              <input type="checkbox" id="settingc" name="settingc" value="settingc">
-              <label for="settingc">Setting C</label><br>
-              <input type="checkbox" id="settingd" name="settingd" value="settingd">
-              <label for="settingd">Setting D</label><br>
+              <label for="epoch">Epoch:</label>
+              <input type="number" id="epoch" name="epoch"><br><br>
+              <br>
+              <input type="checkbox" id="gif" name="gif" value="gif">
+              <label for="gif">Change to a gif</label><br>
             </div>
           </div>
           <div class="row">
             <div class="center">
-              <button type="button" style="text-align: center;">Generate!</button>
+              <button type="button" style="text-align: center;">Generate image</button>
             </div>
           </div>
         <!-- </form> -->
@@ -83,7 +73,8 @@
       <div class="col-sm-1">
         <div class="vl"></div>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-3">
+        <label for="img">Output Image:</label>
         {% load static %}
         <img src="{% static 'antaganize/placeholder.jpg' %}" alt="Placeholder image" height="300px" width="300px" class="center-image">
         <br>
@@ -93,8 +84,18 @@
       </div>
     </div>
   </div>
-
-
 </body>
-
 </html>
+<script>
+  function readURL(input, id) { 
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      $(id).attr('src', e.target.result).width(300);
+    };
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
